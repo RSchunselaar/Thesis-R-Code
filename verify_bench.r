@@ -13,7 +13,6 @@ load_jsonl <- function(path) {
   on.exit(close(con), add = TRUE)
   lines <- readLines(con, warn = FALSE, encoding = "UTF-8")
 
-  # If file starts with "[" assume one big JSON array
   first_nonempty <- lines[trimws(lines) != ""][1]
   if (!is.na(first_nonempty) && startsWith(trimws(first_nonempty), "[")) {
     obj <- tryCatch(jsonlite::fromJSON(paste(lines, collapse = "\n"), simplifyVector = FALSE),
@@ -37,7 +36,7 @@ load_jsonl <- function(path) {
     }
     ok <- tryCatch({
       obj <- jsonlite::fromJSON(s, simplifyVector = FALSE)
-      out[[length(out) + 1]] <- obj            # <-- local assign (NOT <<-)
+      out[[length(out) + 1]] <- obj            
       TRUE
     }, error = function(e) FALSE)
     if (!ok) next
@@ -108,7 +107,7 @@ bootstrap_ci_mean <- function(d, n_boot = 10000, seed = 0, alpha = 0.05) {
   c(lo, hi)
 }
 
-# Holm step-down exactly like your in the Python script:
+# Holm step-down exactly like in the Python script:
 holm_like_python <- function(keys, pvals) {
   valid_idx <- which(!is.na(pvals) & is.finite(pvals))
   m <- length(valid_idx)
